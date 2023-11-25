@@ -29,9 +29,17 @@ class _HomeState extends State<Home> {
     String url = "https://rickandmortyapi.com/api/character";
     http.Response response = await http.get(Uri.parse(url));
     Map<String, dynamic> result = json.decode(response.body);
+    String? nextPageUrl = result["info"]["next"];
     _globalCharacterList = result["results"];
+    while ( nextPageUrl != null) {
+      response = await http.get(Uri.parse(nextPageUrl));
+      print("Downloading from ${nextPageUrl}");
+      Map<String, dynamic> newPageResult = json.decode(response.body);
+      _globalCharacterList += newPageResult["results"];
+      nextPageUrl = newPageResult["info"]["next"];
+      print("List has now ${_globalCharacterList.length} items");
+    }
      filteredList.populateList(_globalCharacterList);
-    _searchSuggestions = [];
     return json.decode(response.body);
   }
 
@@ -45,6 +53,7 @@ class _HomeState extends State<Home> {
         future: _getCharactersList(),
         builder: (context, snapshot) {
               if ( snapshot.hasError ) {
+                print("Error: ${snapshot.error}");
                 return Scaffold(
                     appBar: AppBar(
                       iconTheme: IconThemeData(
@@ -89,6 +98,7 @@ class _HomeState extends State<Home> {
                       backgroundColor: Colors.deepPurpleAccent
                   ),
                   body: scaffoldBody(snapshot, filteredList),
+                  persistentFooterButtons: [],
                 );
               }
         },
