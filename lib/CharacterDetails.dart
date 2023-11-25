@@ -18,7 +18,7 @@ class _CharacterDetailsState extends State<CharacterDetails> {
   Map<String, dynamic> _characterDetails = {};
   _CharacterDetailsState(this.characterId);
 
-  Future<Map> _getCharactersList() async {
+  Future<Map> _getCharactersDetails() async {
     String url = "https://rickandmortyapi.com/api/character/" + characterId;
     http.Response response = await http.get(Uri.parse(url));
     _characterDetails = json.decode(response.body);
@@ -41,27 +41,39 @@ class _CharacterDetailsState extends State<CharacterDetails> {
           backgroundColor: Colors.deepPurpleAccent,
         ),
         body: FutureBuilder<Map>(
-          future: _getCharactersList(),
+          future: _getCharactersDetails(),
           builder: (context, snapshot) {
             String resultado;
             switch(snapshot.connectionState) {
               case ConnectionState.none:
-                return Text("None");
+                return Center(child: CircularProgressIndicator());
               case ConnectionState.waiting:
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               case ConnectionState.active:
-                return Text("Conexão ativa");
+                return Center(child: CircularProgressIndicator());
               case ConnectionState.done:
                 if ( snapshot.hasError ) {
                   print(snapshot.error);
-                  return Center(
-                    child: TextButton(
-                      onPressed: () {
-                        _getCharactersList();
-                      },
-                      child: Text("Erro ao requisitar"),
-                    ),
-                  );
+                  return Container(
+                      padding: EdgeInsets.all(20),
+                      child: Center(child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Error retrieving character details."),
+                            TextButton(
+                              onPressed: () { setState(() {
+                                _getCharactersDetails();
+                              }); } ,
+                              child: const Card(
+                                color: Colors.deepPurple,
+                                child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                        Icon(Icons.refresh, color: Colors.white),
+                                        Text("Try again", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+                                ],),),)
+                          ])));
                 } else {
                   return Container(
                   color: Colors.deepPurple,
@@ -77,7 +89,8 @@ class _CharacterDetailsState extends State<CharacterDetails> {
                       Text(
                         "${_characterDetails["name"]}",
                         style: TextStyle(
-                            fontFamily: "Pacifico", fontSize: 40, color: Colors.white),
+                            fontFamily: "Pacifico", fontSize: 30, color: Colors.white),
+                        textAlign: TextAlign.center,
                       ),
                       Text(
                         "Origin: ${_characterDetails["origin"]["name"]}",

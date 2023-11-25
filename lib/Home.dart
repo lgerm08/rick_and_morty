@@ -7,6 +7,8 @@ import 'package:easy_search_bar/easy_search_bar.dart';
 
 import 'package:rick_and_morty_app/CharacterDetails.dart';
 
+import 'Model/FilteredListModel.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -20,26 +22,21 @@ class _HomeState extends State<Home> {
   String _searchValue = "";
   int _listSize = 0;
   List<dynamic> _globalCharacterList = [];
-  List<dynamic> _auxiliarList = [];
   List<String> _searchSuggestions = [];
+  final FilteredListModel filteredList = FilteredListModel();
 
   Future<Map> _getCharactersList() async {
     String url = "https://rickandmortyapi.com/api/character";
     http.Response response = await http.get(Uri.parse(url));
     Map<String, dynamic> result = json.decode(response.body);
     _globalCharacterList = result["results"];
-     _auxiliarList = _globalCharacterList;
+     filteredList.populateList(_globalCharacterList);
     _searchSuggestions = [];
-    for (var character in _globalCharacterList) {
-      _searchSuggestions.add(character["name"]);
-    };
     return json.decode(response.body);
   }
 
   void filterListWithSearchText(String search) {
-    setState(() {
-      _auxiliarList = _globalCharacterList.where((element) => element["name"].toLowerCase().contains(search.toLowerCase())).toList();
-    });
+    filteredList.filter(_globalCharacterList, search);
   }
 
   @override
@@ -47,64 +44,125 @@ class _HomeState extends State<Home> {
     return FutureBuilder<Map>(
         future: _getCharactersList(),
         builder: (context, snapshot) {
-          String resultado;
-          switch(snapshot.connectionState) {
-            case ConnectionState.none:
-              return Text("None");
-            case ConnectionState.waiting:
-              return CircularProgressIndicator();
-            case ConnectionState.active:
-              return Text("Conexão ativa");
-            case ConnectionState.done:
               if ( snapshot.hasError ) {
-                print("aki");
-                print(snapshot.error);
-                return Center(
-                  child: TextButton(
-                    onPressed: () {
-                      _getCharactersList();
-                    },
-                    child: Text("Erro ao requisitar"),
-                  ),
-                );
+                return Scaffold(
+                    appBar: AppBar(
+                      iconTheme: IconThemeData(
+                          color: Colors.white
+                      ),
+                      title: Text("Rick & Morty: Characters List"),),
+                      body: Container(
+                        padding: EdgeInsets.all(20),
+                        child: Center(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Error retrieving characters list."),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                              }); } ,
+                            child: const Card(color: Colors.deepPurple, child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.refresh, color: Colors.white),
+                                Text("Try again", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+                              ],),),)
+                        ]))));
               } else {
                 return Scaffold(
                   appBar: EasySearchBar(
-                    title: Text("Rick & Morty: Characters List"),
-                    onSearch: (value) => {
-                      filterListWithSearchText(value)
-                    },
-                    suggestions: _searchSuggestions,
-                  ),
-                  body:ListView.builder(
-                    itemCount: _auxiliarList.length,
-                    itemBuilder: (context, index){
-
-                      return ListTile(
-                        leading: SizedBox(
-                            height: 100.0,
-                            width: 100.0, // fixed width and height
-                            child: Image.network("${_auxiliarList[index]["image"]}")
+                      iconTheme: IconThemeData(
+                          color: Colors.white
+                      ),
+                      title: Text(
+                        "Rick & Morty: Characters List",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
                         ),
-                        title: Text("${_auxiliarList[index]["name"]}"),
-                        subtitle: Text("${_auxiliarList[index]["species"]}"),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CharacterDetails(_auxiliarList[index]["id"].toString())
-                              )
-                          );
-                        },
-                      );
-                    },
-                  )
+                      ),
+                      onSearch: (value) =>
+                      {
+                        filterListWithSearchText(value)
+                      },
+                      backgroundColor: Colors.deepPurpleAccent
+                  ),
+                  body: scaffoldBody(snapshot, filteredList),
                 );
               }
-          }
         },
       );
   }
 }
 
+Widget scaffoldBody(AsyncSnapshot<Map<dynamic, dynamic>> snapshot, FilteredListModel filteredList)  {
+  switch(snapshot.connectionState) {
+    case ConnectionState.none:
+      return Center(child: CircularProgressIndicator(),);
+    case ConnectionState.waiting:
+      return Center(child: CircularProgressIndicator(),);
+    case ConnectionState.active:
+      return Center(child: CircularProgressIndicator(),);
+    case ConnectionState.done:
+        return CharacterListBody(listNotifier: filteredList);
+  }
+}
+
+class CharacterListBody extends StatelessWidget {
+  const CharacterListBody({super.key, required this.listNotifier});
+
+  final FilteredListModel listNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: ListenableBuilder(
+              listenable: listNotifier,
+              builder: (BuildContext context, Widget? child) {
+                // We rebuild the ListView each time the list changes,
+                // so that the framework knows to update the rendering.
+                final List<dynamic> values = listNotifier.filteredCharacters; // copy the list
+                return ListView.builder(
+                  itemBuilder: (BuildContext context, int index) => listItem(index, listNotifier.filteredCharacters, context),
+                  itemCount: values.length,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget listItem(int index, List<dynamic> filteredList, BuildContext context) {
+    return Card(
+                color: Colors.deepPurple,
+                elevation: 6,
+                margin: const EdgeInsets.all(10),
+                child: ListTile(
+                  leading: CircleAvatar(radius: 30.0,
+                    backgroundImage: NetworkImage("${filteredList[index]["image"]}"),
+                    backgroundColor: Colors.transparent,
+                  ),
+                  title: Text("${filteredList[index]["name"]}", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  subtitle: Text("${filteredList[index]["species"]}", style: TextStyle(color: Colors.white)),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                CharacterDetails(filteredList[index]["id"]
+                                    .toString())
+                        )
+                    );
+                  },
+                  trailing: Icon(Icons.arrow_forward_ios, color: Colors.white,),
+                ));
+  }
+}
 
