@@ -7,16 +7,17 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "\"Rick & Morty\" characters",
-          style: TextStyle(color: Colors.white, fontSize: 25),
-        ),
-        backgroundColor: Colors.deepPurpleAccent,
-      ),
-      body: filterBody(context),
+          appBar: AppBar(
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Text(
+              "\"Rick & Morty\" characters",
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+            backgroundColor: Colors.deepPurpleAccent,
+          ),
+          body: filterBody(context),
         ));
   }
 
@@ -25,12 +26,14 @@ class Home extends StatelessWidget {
         padding: EdgeInsets.all(20),
         color: Colors.deepPurple,
         child: SingleChildScrollView(
-          child: Column(
+            child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            filterButton(context, "", "See all characters", Icons.all_inclusive),
+            filterButton(
+                context, "", "See all characters", Icons.all_inclusive),
             // GENDER FILTER SECTION
-            Text("Gender",
+            Text(
+              "Gender",
               style: TextStyle(
                   fontFamily: "Pacifico", fontSize: 25, color: Colors.white),
               textAlign: TextAlign.left,
@@ -41,12 +44,17 @@ class Home extends StatelessWidget {
               thickness: 1,
               color: Colors.white,
             ),
-            filterButton(context, "/?gender=Female", "Female characters", Icons.male),
-            filterButton(context, "/?gender=Male", "Male characters", Icons.female),
-            filterButton(context, "/?gender=genderless", "Genderless characters", Icons.block),
-            filterButton(context, "/?gender=Unknown", "Characters with unknown gender", Icons.question_mark),
+            filterButton(
+                context, "/?gender=Female", "Female characters", Icons.male),
+            filterButton(
+                context, "/?gender=Male", "Male characters", Icons.female),
+            filterButton(context, "/?gender=genderless",
+                "Genderless characters", Icons.block),
+            filterButton(context, "/?gender=Unknown",
+                "Characters with unknown gender", Icons.question_mark),
             // SPECIES FILTER SECTION
-            Text("Species",
+            Text(
+              "Species",
               style: TextStyle(
                   fontFamily: "Pacifico", fontSize: 25, color: Colors.white),
               textAlign: TextAlign.left,
@@ -57,12 +65,17 @@ class Home extends StatelessWidget {
               thickness: 1,
               color: Colors.white,
             ),
-            filterButton(context, "/?species=Human", "Human characters", Icons.person),
-            filterButton(context, "/?species=Alien", "Alien characters", Icons.rocket_launch),
-            filterButton(context, "/?species=Robot", "Robot characters", Icons.electric_bolt),
-            filterButton(context, "/?species=Animal", "Animal characters", Icons.pets),
+            filterButton(
+                context, "/?species=Human", "Human characters", Icons.person),
+            filterButton(context, "/?species=Alien", "Alien characters",
+                Icons.rocket_launch),
+            filterButton(context, "/?species=Robot", "Robot characters",
+                Icons.electric_bolt),
+            filterButton(
+                context, "/?species=Animal", "Animal characters", Icons.pets),
             // STATUS FILTER SECTION
-            Text("Status",
+            Text(
+              "Status",
               style: TextStyle(
                   fontFamily: "Pacifico", fontSize: 25, color: Colors.white),
               textAlign: TextAlign.left,
@@ -73,33 +86,32 @@ class Home extends StatelessWidget {
               thickness: 1,
               color: Colors.white,
             ),
-            filterButton(context, "/?status=Alive", "Alive characters", Icons.health_and_safety),
-            filterButton(context, "/?status=Dead", "Dead characters", Icons.heart_broken_outlined),
-            filterButton(context, "/?status=Unknown", "Characters with unknown status", Icons.question_mark),
-            ],
+            filterButton(context, "/?status=Alive", "Alive characters",
+                Icons.health_and_safety),
+            filterButton(context, "/?status=Dead", "Dead characters",
+                Icons.heart_broken_outlined),
+            filterButton(context, "/?status=Unknown",
+                "Characters with unknown status", Icons.question_mark),
+          ],
         )));
   }
 
-  Widget filterButton(BuildContext context, String urlFilter, String label, IconData icon) {
-      return Card(
-          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-          child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            CharactersList(
-                              urlFilter
-                            )
-                    )
-                );
-              },
-              child: ListTile(
-                leading: Icon(icon),
-                title: Text("${label}"),
-              ),
-            ),
-          );
+  Widget filterButton(
+      BuildContext context, String urlFilter, String label, IconData icon) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+      child: TextButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CharactersList(urlFilter)));
+        },
+        child: ListTile(
+          leading: Icon(icon),
+          title: Text("${label}"),
+        ),
+      ),
+    );
   }
 }
