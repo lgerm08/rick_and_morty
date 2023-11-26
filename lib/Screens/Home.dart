@@ -6,7 +6,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        home: Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
@@ -16,7 +17,7 @@ class Home extends StatelessWidget {
         backgroundColor: Colors.deepPurpleAccent,
       ),
       body: filterBody(context),
-    );
+        ));
   }
 
   Widget filterBody(BuildContext context) {
@@ -41,7 +42,7 @@ class Home extends StatelessWidget {
               color: Colors.white,
             ),
             filterButton(context, "/?gender=Female", "Female characters", Icons.male),
-            filterButton(context, "/?gender=Male", "Male Characters", Icons.female),
+            filterButton(context, "/?gender=Male", "Male characters", Icons.female),
             filterButton(context, "/?gender=genderless", "Genderless characters", Icons.block),
             filterButton(context, "/?gender=Unknown", "Characters with unknown gender", Icons.question_mark),
             // SPECIES FILTER SECTION
@@ -57,7 +58,7 @@ class Home extends StatelessWidget {
               color: Colors.white,
             ),
             filterButton(context, "/?species=Human", "Human characters", Icons.person),
-            filterButton(context, "/?species=Alien", "Alien Characters", Icons.rocket_launch),
+            filterButton(context, "/?species=Alien", "Alien characters", Icons.rocket_launch),
             filterButton(context, "/?species=Robot", "Robot characters", Icons.electric_bolt),
             filterButton(context, "/?species=Animal", "Animal characters", Icons.pets),
             // STATUS FILTER SECTION
@@ -73,7 +74,7 @@ class Home extends StatelessWidget {
               color: Colors.white,
             ),
             filterButton(context, "/?status=Alive", "Alive characters", Icons.health_and_safety),
-            filterButton(context, "/?status=Dead", "Dead Characters", Icons.heart_broken_outlined),
+            filterButton(context, "/?status=Dead", "Dead characters", Icons.heart_broken_outlined),
             filterButton(context, "/?status=Unknown", "Characters with unknown status", Icons.question_mark),
             ],
         )));

@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:easy_search_bar/easy_search_bar.dart';
-
 import 'package:rick_and_morty_app/Screens/CharacterDetails.dart';
-
 import '../Model/FilteredListModel.dart';
 
 class CharactersList extends StatefulWidget {
@@ -20,12 +17,14 @@ class CharactersList extends StatefulWidget {
 class _CharactersList extends State<CharactersList> {
 
   String filter;
+  String teste = "";
   String _resultado = "";
   String _searchValue = "";
   String _filter = "";
   List<dynamic> _globalCharacterList = [];
   final FilteredListModel filteredList = FilteredListModel();
 
+  @visibleForTesting
   _CharactersList(this.filter);
 
   // Função para recuperar lista de personagens
