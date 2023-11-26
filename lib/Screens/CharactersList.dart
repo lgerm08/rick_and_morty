@@ -5,28 +5,32 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:easy_search_bar/easy_search_bar.dart';
 
-import 'package:rick_and_morty_app/CharacterDetails.dart';
+import 'package:rick_and_morty_app/Screens/CharacterDetails.dart';
 
-import 'Model/FilteredListModel.dart';
+import '../Model/FilteredListModel.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class CharactersList extends StatefulWidget {
+  final String filter;
+  const CharactersList(this.filter, {super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<CharactersList> createState() => _CharactersList(filter);
 }
 
-class _HomeState extends State<Home> {
+class _CharactersList extends State<CharactersList> {
 
+  String filter;
   String _resultado = "";
   String _searchValue = "";
-  int _listSize = 0;
+  String _filter = "";
   List<dynamic> _globalCharacterList = [];
-  List<String> _searchSuggestions = [];
   final FilteredListModel filteredList = FilteredListModel();
 
+  _CharactersList(this.filter);
+
+  // Função para recuperar lista de personagens
   Future<Map> _getCharactersList() async {
-    String url = "https://rickandmortyapi.com/api/character";
+    String url = "https://rickandmortyapi.com/api/character" + filter;
     http.Response response = await http.get(Uri.parse(url));
     Map<String, dynamic> result = json.decode(response.body);
     String? nextPageUrl = result["info"]["next"];
@@ -43,6 +47,7 @@ class _HomeState extends State<Home> {
     return json.decode(response.body);
   }
 
+  //Funçao para filtrar lista com pesquisa da searchBar
   void filterListWithSearchText(String search) {
     filteredList.filter(_globalCharacterList, search);
   }
@@ -56,10 +61,15 @@ class _HomeState extends State<Home> {
                 print("Error: ${snapshot.error}");
                 return Scaffold(
                     appBar: AppBar(
+                      backgroundColor: Colors.deepPurple,
                       iconTheme: IconThemeData(
                           color: Colors.white
                       ),
-                      title: Text("Rick & Morty: Characters List"),),
+                      title: Text("Rick & Morty: Characters List",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                      ),),),
                       body: Container(
                         padding: EdgeInsets.all(20),
                         child: Center(child: Column(
@@ -70,6 +80,7 @@ class _HomeState extends State<Home> {
                           TextButton(
                             onPressed: () {
                               setState(() {
+                                _getCharactersList();
                               }); } ,
                             child: const Card(color: Colors.deepPurple, child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -97,8 +108,7 @@ class _HomeState extends State<Home> {
                       },
                       backgroundColor: Colors.deepPurpleAccent
                   ),
-                  body: scaffoldBody(snapshot, filteredList),
-                  persistentFooterButtons: [],
+                  body: scaffoldBody(snapshot, filteredList)
                 );
               }
         },
@@ -134,9 +144,7 @@ class CharacterListBody extends StatelessWidget {
             child: ListenableBuilder(
               listenable: listNotifier,
               builder: (BuildContext context, Widget? child) {
-                // We rebuild the ListView each time the list changes,
-                // so that the framework knows to update the rendering.
-                final List<dynamic> values = listNotifier.filteredCharacters; // copy the list
+                final List<dynamic> values = listNotifier.filteredCharacters;
                 return ListView.builder(
                   itemBuilder: (BuildContext context, int index) => listItem(index, listNotifier.filteredCharacters, context),
                   itemCount: values.length,

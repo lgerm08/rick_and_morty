@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:rick_and_morty_app/CharacterDetails.dart';
-import 'package:rick_and_morty_app/dna_icon_icons.dart';
+import 'package:rick_and_morty_app/Screens/CharacterDetails.dart';
+import 'package:rick_and_morty_app/Icons/dna_icon_icons.dart';
 
 class CharacterDetails extends StatefulWidget {
   final String characterId;

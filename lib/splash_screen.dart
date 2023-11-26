@@ -1,8 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty_app/HomeSearch.dart';
-
-import 'Home.dart';
+import 'package:rick_and_morty_app/Screens/Home.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
