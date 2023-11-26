@@ -121,7 +121,7 @@ class _CharacterDetailsState extends State<CharacterDetails> {
                               Icons.question_mark,
                               color: Colors.deepPurple,
                           ),
-                          title: Text("${_characterDetails["gender"]}"),
+                          title: Text("Gender: ${_characterDetails["gender"]}"),
                         ),
                       ),
                       Card(
