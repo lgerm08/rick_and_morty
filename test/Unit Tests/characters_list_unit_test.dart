@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 
 void main() {
-  test("", () async {
+  test("Test if service call is getting correct number of characters", () async {
     String url = "https://rickandmortyapi.com/api/character";
     http.Response response = await http.get(Uri.parse(url));
     Map<String, dynamic> result = json.decode(response.body);

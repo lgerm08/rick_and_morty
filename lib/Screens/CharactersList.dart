@@ -18,16 +18,13 @@ class CharactersList extends StatefulWidget {
 class _CharactersList extends State<CharactersList> {
   String filter;
   String teste = "";
-  String _resultado = "";
   String _searchValue = "";
   String _filter = "";
   List<dynamic> _globalCharacterList = [];
   final FilteredListModel filteredList = FilteredListModel();
 
-  @visibleForTesting
   _CharactersList(this.filter);
 
-  // Função para recuperar lista de personagens
   Future<Map> _getCharactersList() async {
     String url = "https://rickandmortyapi.com/api/character" + filter;
     http.Response response = await http.get(Uri.parse(url));
@@ -46,7 +43,7 @@ class _CharactersList extends State<CharactersList> {
     return json.decode(response.body);
   }
 
-  //Funçao para filtrar lista com pesquisa da searchBar
+  //Search bar method
   void filterListWithSearchText(String search) {
     filteredList.filter(_globalCharacterList, search);
   }
