@@ -1,16 +1,21 @@
-# rick_and_morty_app
+# Flutter Rick & Morty API Practice
 
-An app to find information on Rick and Morty characters
+## Overview
 
-## Getting Started
+This is a project that I developed to practice my Flutter skills, using a "Rick & Morty" API. It should return a list of characters from the show, and filter it accordinly to the users wish.
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- **Character Information:** Retrieve details about your favorite "Rick & Morty" characters, including their names, statuses, species, and more.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Filter:** A filter to retrieve chracters only of certain category.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Search Bar:** A search bar to make navigating through the list easier.
+
+## Technologies Used
+
+- **Flutter:** The project is built using the Flutter framework.
+
+- **Dart Programming Language:** Dart is the language of choice for Flutter development.
+
+- **"Rick & Morty" API:** The application fetches data from the "Rick & Morty" API.
